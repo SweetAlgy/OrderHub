@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OrderHub.Domain.Entities;
-using OrderHub.Shared.Entities;
+using OrderHub.Shared.Interfaces.Entities;
 
 namespace OrderHub.Infrastructure
 {

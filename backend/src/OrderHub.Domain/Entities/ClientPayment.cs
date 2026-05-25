@@ -1,4 +1,4 @@
-﻿using OrderHub.Shared.Entities;
+﻿using OrderHub.Shared.Interfaces.Entities;
 
 namespace OrderHub.Domain.Entities
 {

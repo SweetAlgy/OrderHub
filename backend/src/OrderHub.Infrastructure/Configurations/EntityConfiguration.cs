@@ -1,8 +1,8 @@
 ﻿using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OrderHub.Shared.Entities;
 using OrderHub.Shared.Extensions;
+using OrderHub.Shared.Interfaces.Entities;
 
 namespace OrderHub.Infrastructure.Configurations
 {

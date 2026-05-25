@@ -1,4 +1,4 @@
-﻿namespace OrderHub.Shared.Entities
+﻿namespace OrderHub.Shared.Interfaces.Entities
 {
     /// <summary>
     /// Base contract for all domain entities that carry a primary key.

@@ -1,4 +1,4 @@
-﻿namespace OrderHub.Shared.Entities
+﻿namespace OrderHub.Shared.Interfaces.Entities
 {
     /// <summary>
     /// Extends <see cref="IEntity{T}"/> with audit timestamps that record when the entity was
