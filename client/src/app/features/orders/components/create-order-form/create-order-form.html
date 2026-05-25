@@ -1,0 +1,91 @@
+<div class="modal-header">
+  <h5 class="modal-title">Create New Order</h5>
+  <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  @if (errorMessage) {
+    <div class="alert alert-danger py-2">
+      {{ errorMessage }}
+      <button
+        type="button"
+        class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
+        (click)="dismissError()"
+      ></button>
+    </div>
+  }
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="clientId" class="form-label">Client ID</label>
+      <input
+        id="clientId"
+        type="number"
+        class="form-control"
+        [class.is-invalid]="clientId.invalid && clientId.touched"
+        formControlName="clientId"
+        placeholder="Enter client ID"
+      />
+      @if (clientId.touched && clientId.hasError('required')) {
+        <div class="invalid-feedback">Client ID is required.</div>
+      }
+      @if (clientId.touched && clientId.hasError('min')) {
+        <div class="invalid-feedback">Client ID must be greater than 0.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="orderNumber" class="form-label">Order Number</label>
+      <input
+        id="orderNumber"
+        type="text"
+        class="form-control"
+        [class.is-invalid]="orderNumber.invalid && orderNumber.touched"
+        formControlName="orderNumber"
+        placeholder="e.g. ORD-001"
+      />
+      @if (orderNumber.touched && orderNumber.hasError('required')) {
+        <div class="invalid-feedback">Order number is required.</div>
+      }
+      @if (orderNumber.touched && orderNumber.hasError('maxlength')) {
+        <div class="invalid-feedback">Order number cannot exceed 64 characters.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea
+        id="description"
+        class="form-control"
+        [class.is-invalid]="description.invalid && description.touched"
+        formControlName="description"
+        rows="3"
+        placeholder="Order description"
+      ></textarea>
+      @if (description.touched && description.hasError('required')) {
+        <div class="invalid-feedback">Description is required.</div>
+      }
+      @if (description.touched && description.hasError('maxlength')) {
+        <div class="invalid-feedback">Description cannot exceed 1024 characters.</div>
+      }
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+    Cancel
+  </button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [disabled]="isSubmitting"
+    (click)="onSubmit()"
+  >
+    @if (isSubmitting) {
+      <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+      Creating...
+    } @else {
+      Create Order
+    }
+  </button>
+</div>

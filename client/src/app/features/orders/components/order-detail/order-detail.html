@@ -1,0 +1,78 @@
+<div class="modal-header">
+  <h5 class="modal-title">Order {{ order.orderNumber }}</h5>
+  <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <div class="row g-3">
+
+    <div class="col-12">
+      <label class="text-muted small">Order Number</label>
+      <div class="fw-semibold">{{ order.orderNumber }}</div>
+    </div>
+
+    <div class="col-12">
+      <label class="text-muted small">Description</label>
+      <div>{{ order.description }}</div>
+    </div>
+
+    <div class="col-12">
+      <label class="text-muted small">Status</label>
+      <div class="d-flex align-items-center gap-2 mt-1">
+        @if (isEditing) {
+          <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedStatus">
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ status }}</option>
+            }
+          </select>
+        } @else {
+          <app-order-status-badge [status]="order.status" />
+        }
+      </div>
+    </div>
+
+    <div class="col-6">
+      <label class="text-muted small">Created At</label>
+      <div>{{ order.createdAt | localDate : 'dd.MM.yyyy HH:mm' }}</div>
+    </div>
+
+    <div class="col-6">
+      <label class="text-muted small">Updated At</label>
+      <div>{{ order.updatedAt | localDate : 'dd.MM.yyyy HH:mm' }}</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  @if (isEditing) {
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [disabled]="isSubmitting"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-success"
+      [disabled]="isSubmitting"
+      (click)="onSubmit()"
+    >
+      @if (isSubmitting) {
+        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+        Saving...
+      } @else {
+        Save
+      }
+    </button>
+  } @else {
+    <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+      Close
+    </button>
+    <button type="button" class="btn btn-primary" (click)="onEdit()">
+      Edit Status
+    </button>
+  }
+</div>

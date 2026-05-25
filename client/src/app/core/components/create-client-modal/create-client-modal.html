@@ -1,0 +1,56 @@
+<div class="modal-header">
+  <h5 class="modal-title">Create New Client</h5>
+  <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  @if (errorMessage) {
+    <div class="alert alert-danger py-2 position-relative">
+      {{ errorMessage }}
+      <button
+        type="button"
+        class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
+        (click)="dismissError()"
+      ></button>
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input
+        id="name"
+        type="text"
+        class="form-control"
+        [class.is-invalid]="name.invalid && name.touched"
+        formControlName="name"
+        placeholder="Enter client name"
+      />
+      @if (name.touched && name.hasError('required')) {
+        <div class="invalid-feedback">Name is required.</div>
+      }
+      @if (name.touched && name.hasError('maxlength')) {
+        <div class="invalid-feedback">Name cannot exceed 256 characters.</div>
+      }
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="isSubmitting"
+    (click)="onSubmit()"
+  >
+    @if (isSubmitting) {
+      <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+      Creating...
+    } @else {
+      Create Client
+    }
+  </button>
+</div>

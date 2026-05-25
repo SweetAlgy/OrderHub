@@ -1,0 +1,17 @@
+@for (toast of toastService.toasts; track toast) {
+  <ngb-toast
+    [class]="toast.type === 'success' ? 'bg-success text-white' : 'bg-danger text-white'"
+    [autohide]="true"
+    [delay]="4000"
+    (hidden)="toastService.remove(toast)"
+  >
+    <div class="d-flex align-items-center gap-2">
+      @if (toast.type === 'success') {
+        <i class="bi bi-check-circle-fill"></i>
+      } @else {
+        <i class="bi bi-exclamation-circle-fill"></i>
+      }
+      {{ toast.message }}
+    </div>
+  </ngb-toast>
+}

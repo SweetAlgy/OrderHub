@@ -1,0 +1,19 @@
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+th.sortable {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.table thead th.sortable:hover {
+  background-color: rgba(0, 0, 0, 0.98);
+  cursor: pointer;
+}
+
+.table thead th.sortable {
+  user-select: none;
+  white-space: nowrap;
+}
