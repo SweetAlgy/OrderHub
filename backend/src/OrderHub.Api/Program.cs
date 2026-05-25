@@ -2,11 +2,14 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using OrderHub.Api.Extensions;
 using OrderHub.Api.Transformers;
-using OrderHub.Application;
+using OrderHub.Infrastructure;
 using OrderHub.Infrastructure.Hubs;
 using SwaggerThemes;
+using ServicesInstaller = OrderHub.Application.ServicesInstaller;
 
 namespace OrderHub.Api
 {
@@ -35,18 +38,23 @@ namespace OrderHub.Api
         {
             services.AddSignalR();
             services.AddCors(options =>
-            {
-                options.AddPolicy("AllowFrontend", policy =>
-                    policy.WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials());
-            });
+                {
+                    options.AddPolicy(
+                        "AllowFrontend",
+                        policy =>
+                            policy.WithOrigins("http://localhost:4200")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowCredentials()
+                    );
+                }
+            );
             services
                 .AddControllers(options =>
-                {
-                    options.Conventions.Add(new RouteTokenTransformerConvention(new LowerCaseRouteTransformer()));
-                })
+                    {
+                        options.Conventions.Add(new RouteTokenTransformerConvention(new LowerCaseRouteTransformer()));
+                    }
+                )
                 .AddJsonOptions(options =>
                     {
                         options.JsonSerializerOptions.WriteIndented = true;
@@ -75,6 +83,8 @@ namespace OrderHub.Api
         private static void Configure(WebApplication application)
         {
             var environment = application.Environment;
+            
+            Program.ApplyDatabaseMigrations(application);
 
             if (environment.IsDevelopment())
             {
@@ -89,7 +99,7 @@ namespace OrderHub.Api
                 application.UseHsts();
                 application.UseHttpsRedirection();
             }
-            
+
             application.UseCors("AllowFrontend");
             application.UseRouting();
             application.MapControllers();
@@ -99,8 +109,34 @@ namespace OrderHub.Api
 
         private static void InstallServicesFromAssembly(IServiceCollection services, IConfiguration configuration)
         {
-           new ServicesInstaller().InstallServices(services, configuration);
-           new Infrastructure.ServicesInstaller().InstallServices(services, configuration);
+            new ServicesInstaller().InstallServices(services, configuration);
+            new Infrastructure.ServicesInstaller().InstallServices(services, configuration);
+        }
+
+        private static void ApplyDatabaseMigrations(WebApplication application)
+        {
+            var logger = application.Logger;
+
+            try
+            {
+                logger.LogInformation("Starting database migrations...");
+                using var databaseMigrationScope = application.Services.CreateScope();
+                var context = databaseMigrationScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                context.Database.Migrate();
+                logger.LogInformation("Database migrations succeeded.");
+            }
+            catch (NpgsqlException exception)
+            {
+                logger.LogError(
+                    exception,
+                    "Connection to the database failed."
+                    + "Please ensure that the database is running and accessible."
+                );
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "An unknown error occurred.");
+            }
         }
     }
 }
