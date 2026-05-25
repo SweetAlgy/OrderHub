@@ -1,0 +1,30 @@
+# =============================================================================
+# Unit Tests — OrderHub.Tests (xunit + NSubstitute)
+# No runtime stage needed: tests run entirely inside the SDK image
+# =============================================================================
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS test
+WORKDIR /app
+
+# Copy solution file
+COPY OrderHub.slnx ./
+
+# Copy project files (separate layer for better caching of restore)
+COPY src/OrderHub.Application/OrderHub.Application.csproj src/OrderHub.Application/
+COPY src/OrderHub.Domain/OrderHub.Domain.csproj           src/OrderHub.Domain/
+COPY src/OrderHub.Infrastructure/OrderHub.Infrastructure.csproj src/OrderHub.Infrastructure/
+COPY src/OrderHub.Shared/OrderHub.Shared.csproj           src/OrderHub.Shared/
+COPY tests/OrderHub.Tests/OrderHub.Tests.csproj           tests/OrderHub.Tests/
+
+# Restore only the test project and its dependencies
+RUN dotnet restore tests/OrderHub.Tests/OrderHub.Tests.csproj
+
+
+# Copy full source
+COPY src/ src/
+COPY tests/ tests/
+
+# Run tests with detailed output and coverage collection
+ENTRYPOINT ["dotnet", "test", "tests/OrderHub.Tests/OrderHub.Tests.csproj", \
+            "--no-restore", \
+            "--verbosity", "normal", \
+            "--collect:XPlat Code Coverage"]

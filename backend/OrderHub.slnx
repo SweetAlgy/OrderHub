@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/">
+    <File Path="src/.gitignore" />
+    <Project Path="src/OrderHub.Api/OrderHub.Api.csproj" />
+    <Project Path="src/OrderHub.Application/OrderHub.Application.csproj" />
+    <Project Path="src/OrderHub.Domain/OrderHub.Domain.csproj" />
+    <Project Path="src/OrderHub.Infrastructure/OrderHub.Infrastructure.csproj" />
+    <Project Path="src/OrderHub.Shared/OrderHub.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OrderHub.Tests/OrderHub.Tests.csproj" />
+  </Folder>
+  <Folder Name="/docker/">
+    <File Path="../docker-compose.yml" />
+    <File Path="../docker-compose.tests.yml" />
+    <File Path="Dockerfile" />
+    <File Path="Dockerfile.Tests" />
+  </Folder>
+</Solution>
